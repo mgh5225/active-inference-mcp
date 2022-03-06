@@ -1,13 +1,17 @@
 import torch
+from .hyper_parameters import *
 
 
-def o_at(a_t):
-    return a_t
+def o_at(a_t: float):
+    t_a_t = torch.Tensor([a_t]).view(d_o, -1)
+    return t_a_t
 
 
-def o_xt(x_t):
-    return torch.normal(x_t, 0.01)
+def o_xt(x_t: float):
+    t_x_t = torch.Tensor([x_t]).view(d_o, -1)
+    return torch.normal(t_x_t, 0.01)
 
 
-def o_ht(distance):
-    return torch.exp(-torch.square(distance)/2.0/0.3/0.3)
+def o_ht(distance: float):
+    t_distance = torch.Tensor([distance]).view(d_o, -1)
+    return torch.exp(-torch.square(t_distance)/2.0/0.3/0.3)

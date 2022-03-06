@@ -1,5 +1,6 @@
 import torch
-from torch import optim
+import numpy as np
+from torch import optim, nn
 
 from unity import EngineType, Environment
 from utils import sensory_inputs as si, generative_model as gm, functions as fn
@@ -16,7 +17,7 @@ if torch.cuda.is_available():
     torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
 
-F = 0
+F = []
 
 s_t = torch.zeros((1, d_s))
 x_t = env.get_position()[0]
@@ -33,16 +34,37 @@ q_model.init_model()
 o_model.init_model()
 
 
+def get_parameters():
+    params = nn.ParameterList()
+    params.extend(list(a_model.parameters()))
+    params.extend(list(s_model.parameters()))
+    params.extend(list(q_model.parameters()))
+    params.extend(list(o_model.parameters()))
+
+    return params
+
+
+def get_sigmas():
+    sigmas = nn.ParameterList()
+    sigmas.extend(a_model.sigmas)
+    sigmas.extend(s_model.sigmas)
+    sigmas.extend(q_model.sigmas)
+    sigmas.extend(o_model.sigmas)
+
+    return sigmas
+
+
 def sample_based_approximation_of_F():
     at_mean, at_std = a_model(s_t)
 
     at = torch.normal(at_mean, at_std)
 
-    env.set_action(at)
+    env_at = at.cpu().numpy().reshape(1)[0]
+    env.set_action(env_at)
 
-    x_t = env.get_position()[0]
-    a_t = env.get_action()
-    distance = env.get_distance()[0]
+    x_t = env.get_position()[0, 0]
+    a_t = env.get_action()[0]
+    distance = env.get_distance()[0, 0]
 
     o_xt = si.o_xt(x_t)
     o_ht = si.o_ht(distance)
@@ -71,24 +93,21 @@ def sample_based_approximation_of_F():
 
 
 def optimisation_of_F_bound():
-    params = (a_model.parameters(), s_model.parameters(),
-              q_model.parameters(), o_model.parameters())
-
-    sigmas = (a_model.sigmas, s_model.sigmas,
-              q_model.sigmas, o_model.sigmas)
-
-    optim_params = optim.Adam(params,
+    optim_params = optim.Adam(get_parameters(),
                               lr=adam_alpha,
                               betas=(adam_beta_1, adam_beta_2),
                               eps=adam_epsilon)
 
-    optim_sigmas = optim.Adam(sigmas,
+    optim_sigmas = optim.Adam(get_sigmas(),
                               lr=adam_alpha,
                               betas=(adam_beta_1, adam_beta_2),
                               eps=adam_epsilon)
 
     for i in range(steps):
-        FEt = sample_based_approximation_of_F()
+        with torch.no_grad():
+            FEt = sample_based_approximation_of_F()
+            print("[{}]Free Energy: {}".format(i+1, FEt.item()))
+            F.append(FEt)
 
         optim_params.zero_grad()
         optim_sigmas.zero_grad()

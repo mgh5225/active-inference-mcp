@@ -17,7 +17,7 @@ class NetModel(nn.Module):
         N = F.softplus(sigma) + sig_min
 
         # return torch.dot(FEt_mean, epsilon) / N / n_pop
-        return torch.dot(FEt, epsilon) / N
+        return FEt * epsilon / N
 
     def grad_sigma(self, FEt, epsilon, sigma):
         # FEt_mean = FEt.mean(dim=0).mean(dim=1)
@@ -28,11 +28,13 @@ class NetModel(nn.Module):
         eq_2 = torch.exp(sigma) / (1 + torch.exp(sigma))
 
         # return torch.dot(FEt_mean, eq_1 * eq_2) / n_pop
-        return torch.dot(FEt, eq_1 * eq_2)
+        return FEt * eq_1 * eq_2
 
     def init_sigmas(self):
         for param in self.parameters():
-            sigma = torch.ones_like(param, requires_grad=True) * sig_init
+            # sigma = torch.ones_like(param, requires_grad=True) * sig_init
+            sigma = nn.parameter.Parameter(torch.ones_like(
+                param) * sig_init, requires_grad=True)
             self.sigmas.append(sigma)
 
     def init_params(self):
@@ -78,9 +80,9 @@ class QNetModel(NetModel):
         super(QNetModel, self).__init__()
 
         self.hst_st = nn.Linear(d_s, d_s)
-        self.hst_oxt = nn.Linear(d_s, d_o)
-        self.hst_oht = nn.Linear(d_s, d_o)
-        self.hst_oat = nn.Linear(d_s, d_o)
+        self.hst_oxt = nn.Linear(d_o, d_s)
+        self.hst_oht = nn.Linear(d_o, d_s)
+        self.hst_oat = nn.Linear(d_o, d_s)
 
         self.hst_2 = nn.Linear(d_s, d_s)
 
@@ -114,9 +116,9 @@ class ANetModel(NetModel):
 
         self.aht = nn.Linear(d_s, d_s)
 
-        self.std_l = nn.Linear(d_a, d_s)
+        self.std_l = nn.Linear(d_s, d_a)
 
-        self.mean = nn.Linear(d_a, d_s)
+        self.mean = nn.Linear(d_s, d_a)
         self.std = nn.Softplus()
 
     def forward(self, s_t):
@@ -132,20 +134,20 @@ class ONetModel(NetModel):
     def __init__(self, d_s, d_o):
         super(ONetModel, self).__init__()
         self.o_st_1 = nn.Linear(d_s, d_s)
-        self.o_st_1 = nn.Linear(d_s, d_s)
-        self.o_st_1 = nn.Linear(d_s, d_s)
+        self.o_st_2 = nn.Linear(d_s, d_s)
+        self.o_st_3 = nn.Linear(d_s, d_s)
 
         self.layer_1 = nn.Tanh()
         self.layer_2 = nn.Tanh()
         self.layer_3 = nn.Tanh()
 
-        self.o_xt_mean = nn.Linear(d_o, d_s)
-        self.o_ht_mean = nn.Linear(d_o, d_s)
-        self.o_at_mean = nn.Linear(d_o, d_s)
+        self.o_xt_mean = nn.Linear(d_s, d_o)
+        self.o_ht_mean = nn.Linear(d_s, d_o)
+        self.o_at_mean = nn.Linear(d_s, d_o)
 
-        self.o_xt_std_l = nn.Linear(d_o, d_s)
-        self.o_ht_std_l = nn.Linear(d_o, d_s)
-        self.o_at_std_l = nn.Linear(d_o, d_s)
+        self.o_xt_std_l = nn.Linear(d_s, d_o)
+        self.o_ht_std_l = nn.Linear(d_s, d_o)
+        self.o_at_std_l = nn.Linear(d_s, d_o)
 
         self.o_xt_std = nn.Softplus()
         self.o_ht_std = nn.Softplus()

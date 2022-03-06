@@ -3,9 +3,10 @@ import torch
 
 
 def GaussianNLL(y, mean, std):
+    pi = torch.acos(torch.zeros(1)) * 2
 
     nll = 0.5 * torch.sum(torch.square(y - mean) / std**2 + 2 * torch.log(std) +
-                          torch.log(2 * np.pi), dim=1)
+                          torch.log(2 * pi), dim=1)
     return nll
 
 
