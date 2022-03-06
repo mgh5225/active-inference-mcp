@@ -16,7 +16,7 @@ F = 0
 
 s_t = torch.zeros((1, d_s))
 x_t = env.get_position()[0]
-a_t = env.get_throttle()
+a_t = env.get_action()
 
 a_model = gm.ANetModel(d_s, d_a)
 s_model = gm.SNetModel(d_s)
@@ -37,7 +37,7 @@ def sample_based_approximation_of_F():
     env.set_action(at)
 
     x_t = env.get_position()[0]
-    a_t = env.get_throttle()
+    a_t = env.get_action()
     distance = env.get_distance()[0]
 
     o_xt = si.o_xt(x_t)

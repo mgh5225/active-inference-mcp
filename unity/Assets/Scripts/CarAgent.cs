@@ -15,7 +15,6 @@ public class CarAgent : Agent
     [SerializeField] TMP_Text engineTypeText;
     [SerializeField] Transform target;
     CarController carController;
-    Rigidbody2D rb;
     float throttle;
     EnvironmentParameters env;
 
@@ -24,7 +23,6 @@ public class CarAgent : Agent
         base.Initialize();
 
         carController = GetComponent<CarController>();
-        rb = GetComponent<Rigidbody2D>();
         env = Academy.Instance.EnvironmentParameters;
         ResetCar();
     }
@@ -62,7 +60,6 @@ public class CarAgent : Agent
 
         sensor.AddObservation(transform.position.x);
         sensor.AddObservation(transform.position.y);
-        sensor.AddObservation(rb.velocity);
         sensor.AddObservation(throttle);
         sensor.AddObservation(distance);
     }

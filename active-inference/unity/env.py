@@ -50,21 +50,17 @@ class Environment:
         decision_steps, _ = self.env.get_steps(self.behavior_name)
         return decision_steps.obs[0][:, :2]
 
-    def get_velocity(self):
+    def get_action(self):
         decision_steps, _ = self.env.get_steps(self.behavior_name)
-        return decision_steps.obs[0][:, 2:4]
-
-    def get_throttle(self):
-        decision_steps, _ = self.env.get_steps(self.behavior_name)
-        return decision_steps.obs[0][:, 4]
+        return decision_steps.obs[0][:, 2]
 
     def get_distance(self):
         decision_steps, _ = self.env.get_steps(self.behavior_name)
-        return decision_steps.obs[0][:, 5:7]
+        return decision_steps.obs[0][:, 3:5]
 
-    def set_action(self, throttle: float):
+    def set_action(self, action: float):
         action_tuple = ActionTuple()
-        action_tuple.add_continuous(np.array([[throttle]]))
+        action_tuple.add_continuous(np.array([[action]]))
         self.env.set_actions(self.behavior_name, action_tuple)
         self.env.step()
 
