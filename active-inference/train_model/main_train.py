@@ -66,7 +66,7 @@ def sample_based_approximation_of_F():
     return FEt
 
 
-def optimisation_of_F_bound(s_t):
+def optimisation_of_F_bound():
     params = (a_model.parameters(), s_model.parameters(),
               q_model.parameters(), o_model.parameters())
 
@@ -84,7 +84,7 @@ def optimisation_of_F_bound(s_t):
                               eps=adam_epsilon)
 
     for i in range(steps):
-        FEt = sample_based_approximation_of_F(s_t)
+        FEt = sample_based_approximation_of_F()
 
         optim_params.zero_grad()
         optim_sigmas.zero_grad()
