@@ -8,6 +8,8 @@ from .hyper_parameters import *
 class NetModel(nn.Module):
     def __init__(self):
         super().__init__()
+        self.sigmas = []
+        self.epsilons = []
 
     def grad_mu(self, FEt, epsilon, sigma):
         # FEt_mean = FEt.mean(dim=0).mean(dim=1)
@@ -29,30 +31,25 @@ class NetModel(nn.Module):
         return torch.dot(FEt, eq_1 * eq_2)
 
     def init_sigmas(self):
-        for idx, param in self.parameters():
-            sigma = torch.ones(param.shape, requires_grad=True) * sig_init
-            if idx == 0:
-                self.sigmas = sigma
-            else:
-                self.sigmas = torch.cat((self.sigmas, sigma), 0)
+        for param in self.parameters():
+            sigma = torch.ones_like(param, requires_grad=True) * sig_init
+            self.sigmas.append(sigma)
 
     def init_params(self):
-        for idx, param in self.parameters():
+        for idx, param in enumerate(self.parameters()):
             # epsilon_half = torch.randn(n_pop/2, param.shape[1], param.shape[2])
             # epsilon = torch.cat((epsilon_half, -1 * epsilon_half), 0)
             epsilon = torch.randn(param.shape)
-            param.add_(epsilon * F.softplus(self.sigmas[idx]) + sig_min)
-            if idx == 0:
-                self.epsilons = epsilon
-            else:
-                self.epsilons = torch.cat((self.epsilons, epsilon), 0)
+            with torch.no_grad():
+                param.add_(epsilon * F.softplus(self.sigmas[idx]) + sig_min)
+            self.epsilons.append(epsilon)
 
     def init_model(self):
         self.init_sigmas()
         self.init_params()
 
     def calc_grad(self, FEt):
-        for idx, param in self.parameters():
+        for idx, param in enumerate(self.parameters()):
             sigma = self.sigmas[idx]
             epsilon = self.epsilons[idx]
 

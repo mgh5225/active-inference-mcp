@@ -104,3 +104,4 @@ def optimisation_of_F_bound():
 
 if __name__ == "__main__":
     optimisation_of_F_bound()
+    env.close()
