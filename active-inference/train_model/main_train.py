@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 from torch import optim, nn
+from torch.nn import functional as F
 
 from unity import EngineType, Environment
 from utils import sensory_inputs as si, generative_model as gm, functions as fn
@@ -17,7 +18,7 @@ if torch.cuda.is_available():
     torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
 
-F = []
+FEs = []
 
 s_t = torch.zeros((1, d_s))
 x_t = env.get_position()[0]
@@ -57,7 +58,7 @@ def get_sigmas():
 def sample_based_approximation_of_F():
     at_mean, at_std = a_model(s_t)
 
-    at = torch.normal(at_mean, at_std)
+    at = F.tanh(torch.normal(at_mean, at_std))
 
     env_at = at.cpu().numpy().reshape(1)[0]
     env.set_action(env_at)
@@ -107,7 +108,7 @@ def optimisation_of_F_bound():
         with torch.no_grad():
             FEt = sample_based_approximation_of_F()
             print("[{}]Free Energy: {}".format(i+1, FEt.item()))
-            F.append(FEt)
+            FEs.append(FEt)
 
         optim_params.zero_grad()
         optim_sigmas.zero_grad()
