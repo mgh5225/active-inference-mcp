@@ -10,21 +10,23 @@ class NetModel(nn.Module):
         super().__init__()
 
     def grad_mu(self, FEt, epsilon, sigma):
-        FEt_mean = FEt.mean(dim=0).mean(dim=1)
+        # FEt_mean = FEt.mean(dim=0).mean(dim=1)
 
         N = F.softplus(sigma) + sig_min
 
-        return torch.dot(FEt_mean, epsilon) / N / n_pop
+        # return torch.dot(FEt_mean, epsilon) / N / n_pop
+        return torch.dot(FEt, epsilon) / N
 
     def grad_sigma(self, FEt, epsilon, sigma):
-        FEt_mean = FEt.mean(dim=0).mean(dim=1)
+        # FEt_mean = FEt.mean(dim=0).mean(dim=1)
 
         N = F.softplus(sigma) + sig_min
 
         eq_1 = (torch.square(epsilon) - 1) / N
         eq_2 = torch.exp(sigma) / (1 + torch.exp(sigma))
 
-        return torch.dot(FEt_mean, eq_1 * eq_2) / n_pop
+        # return torch.dot(FEt_mean, eq_1 * eq_2) / n_pop
+        return torch.dot(FEt, eq_1 * eq_2)
 
     def init_sigmas(self):
         for idx, param in self.parameters():
@@ -36,8 +38,9 @@ class NetModel(nn.Module):
 
     def init_params(self):
         for idx, param in self.parameters():
-            epsilon_half = torch.rand(n_pop/2, param.shape[1], param.shape[2])
-            epsilon = torch.cat((epsilon_half, -1 * epsilon_half), 0)
+            # epsilon_half = torch.randn(n_pop/2, param.shape[1], param.shape[2])
+            # epsilon = torch.cat((epsilon_half, -1 * epsilon_half), 0)
+            epsilon = torch.randn(param.shape)
             param.add_(epsilon * F.softplus(self.sigmas[idx]) + sig_min)
             if idx == 0:
                 self.epsilons = epsilon
