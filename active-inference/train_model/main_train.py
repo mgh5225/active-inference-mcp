@@ -98,4 +98,5 @@ def optimisation_of_F_bound():
         optim_sigmas.step()
 
 
-optimisation_of_F_bound(s_t)
+if __name__ == "__main__":
+    optimisation_of_F_bound()
