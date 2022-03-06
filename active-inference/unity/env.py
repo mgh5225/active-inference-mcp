@@ -46,6 +46,10 @@ class Environment:
         self.environment_parameters_channel.set_float_parameter(
             "engineType", type.value)
 
+    def set_max_steps(self, max_steps: int):
+        self.environment_parameters_channel.set_float_parameter(
+            "maxSteps", max_steps)
+
     def get_position(self):
         decision_steps, _ = self.env.get_steps(self.behavior_name)
         return decision_steps.obs[0][:, :2]

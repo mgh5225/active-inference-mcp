@@ -445,7 +445,9 @@ MonoBehaviour:
   hasUpgradedFromAgentParameters: 1
   MaxStep: 20000
   startPosition: {x: -3.5, y: -5.71}
+  maxStepsText: {fileID: 0}
   engineTypeText: {fileID: 0}
+  actionText: {fileID: 0}
   target: {fileID: 0}
 --- !u!114 &3418291152197700401
 MonoBehaviour:

@@ -12,7 +12,9 @@ using TMPro;
 public class CarAgent : Agent
 {
     [SerializeField] Vector2 startPosition;
+    [SerializeField] TMP_Text maxStepsText;
     [SerializeField] TMP_Text engineTypeText;
+    [SerializeField] TMP_Text actionText;
     [SerializeField] Transform target;
     CarController carController;
     float throttle;
@@ -68,6 +70,8 @@ public class CarAgent : Agent
     {
         throttle = actions.ContinuousActions[0];
         carController.Torque(throttle);
+
+        actionText.text = $"Action: {throttle.ToString()}";
     }
 
     public override void OnEpisodeBegin()
@@ -95,8 +99,12 @@ public class CarAgent : Agent
         var engineType = (CarController.EngineType)(int)env.GetWithDefault("engineType", 0f);
         carController.SetEngineType(engineType);
 
-        engineTypeText.text = $"Engine Type: {engineType.ToString()}";
+        MaxStep = (int)env.GetWithDefault("maxSteps", MaxStep);
 
         throttle = 0f;
+
+        maxStepsText.text = $"Max Steps: {MaxStep.ToString()}";
+        engineTypeText.text = $"Engine Type: {engineType.ToString()}";
+        actionText.text = $"Action: {throttle.ToString()}";
     }
 }
