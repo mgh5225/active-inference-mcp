@@ -2,7 +2,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from hyper_parameters import *
+from .hyper_parameters import *
 
 
 class NetModel(nn.Module):

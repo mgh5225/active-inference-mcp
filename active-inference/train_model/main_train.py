@@ -2,7 +2,7 @@ import torch
 from torch import optim
 
 from unity import EngineType, Environment
-from utils import si, gm, fn
+from utils import sensory_inputs as si, generative_model as gm, functions as fn
 from utils.hyper_parameters import *
 
 env = Environment()
@@ -10,6 +10,10 @@ env.init_env()
 
 env.set_engine_type(EngineType.Both)
 env.reset()
+
+if torch.cuda.is_available():
+    torch.cuda.empty_cache()
+    torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
 
 F = 0
