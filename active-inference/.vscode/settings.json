@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "cuda",
+        "ndarray",
         "optim",
         "randn",
         "unsqueeze"

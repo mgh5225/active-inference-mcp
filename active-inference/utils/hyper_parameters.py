@@ -8,7 +8,7 @@ adam_beta_2 = 0.999
 adam_epsilon = 10e-8
 
 n_F = 1
-n_pop = 10e4
+n_pop = 12
 
 steps = 10000
 

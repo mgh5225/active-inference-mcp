@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
@@ -11,12 +10,13 @@ using TMPro;
 [RequireComponent(typeof(Rigidbody))]
 public class CarAgent : Agent
 {
-    [SerializeField] Vector2 startPosition;
+    [SerializeField] bool mainAgent = false;
     [SerializeField] TMP_Text maxStepsText;
     [SerializeField] TMP_Text engineTypeText;
     [SerializeField] TMP_Text actionText;
     [SerializeField] Transform target;
     CarController carController;
+    Vector2 startPosition;
     float throttle;
     EnvironmentParameters env;
 
@@ -25,23 +25,9 @@ public class CarAgent : Agent
         base.Initialize();
 
         carController = GetComponent<CarController>();
+        startPosition = transform.position;
         env = Academy.Instance.EnvironmentParameters;
         ResetCar();
-    }
-
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-
-        EventHandler.onTargetReach += TargetReach;
-        EventHandler.onCarRoofHit += CarRoofHit;
-    }
-    protected override void OnDisable()
-    {
-        base.OnDisable();
-
-        EventHandler.onTargetReach -= TargetReach;
-        EventHandler.onCarRoofHit -= CarRoofHit;
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
@@ -53,15 +39,9 @@ public class CarAgent : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
 
-        Vector2 targetPosition = target.position;
-        var distance = new Vector2()
-        {
-            x = transform.position.x - targetPosition.x,
-            y = transform.position.y - targetPosition.y
-        };
+        var distance = transform.localPosition.x - target.localPosition.x;
 
-        sensor.AddObservation(transform.position.x);
-        sensor.AddObservation(transform.position.y);
+        sensor.AddObservation(transform.localPosition.x);
         sensor.AddObservation(throttle);
         sensor.AddObservation(distance);
     }
@@ -71,7 +51,8 @@ public class CarAgent : Agent
         throttle = actions.ContinuousActions[0];
         carController.Torque(throttle);
 
-        actionText.text = $"Action: {throttle.ToString()}";
+        if (mainAgent)
+            actionText.text = $"Action: {throttle.ToString()}";
     }
 
     public override void OnEpisodeBegin()
@@ -81,16 +62,12 @@ public class CarAgent : Agent
         ResetCar();
     }
 
-    void TargetReach()
+    public void TargetReached()
     {
-        EndEpisode();
-    }
-    void CarRoofHit()
-    {
-        EndEpisode();
+        ResetCar();
     }
 
-    void ResetCar()
+    public void ResetCar()
     {
         var zeroRotation = Quaternion.Euler(0f, 0f, 0f);
         transform.position = startPosition;
@@ -103,8 +80,12 @@ public class CarAgent : Agent
 
         throttle = 0f;
 
-        maxStepsText.text = $"Max Steps: {MaxStep.ToString()}";
-        engineTypeText.text = $"Engine Type: {engineType.ToString()}";
-        actionText.text = $"Action: {throttle.ToString()}";
+        if (mainAgent)
+        {
+            maxStepsText.text = $"Max Steps: {MaxStep.ToString()}";
+            engineTypeText.text = $"Engine Type: {engineType.ToString()}";
+            actionText.text = $"Action: {throttle.ToString()}";
+        }
+
     }
 }

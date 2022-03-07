@@ -15,11 +15,11 @@ class NetModel(nn.Module):
         self.sigmas = []
         self.epsilons = []
         self.params_path = os.path.join(
-            MODEL_PATH, "{}-params.pt".format(self.__class__.__name__))
+            MODEL_PATH, "{}-{}-params.pt".format(self.__class__.__name__, n_pop))
         self.sigmas_path = os.path.join(
-            MODEL_PATH, "{}-sigmas.pt".format(self.__class__.__name__))
+            MODEL_PATH, "{}-{}-sigmas.pt".format(self.__class__.__name__, n_pop))
         self.epsilons_path = os.path.join(
-            MODEL_PATH, "{}-epsilons.pt".format(self.__class__.__name__))
+            MODEL_PATH, "{}-{}-epsilons.pt".format(self.__class__.__name__, n_pop))
 
     def save_model(self):
         if not os.path.exists(MODEL_PATH):
@@ -35,23 +35,23 @@ class NetModel(nn.Module):
         self.epsilons = torch.load(self.epsilons_path)
 
     def grad_mu(self, FEt, epsilon, sigma):
-        # FEt_mean = FEt.mean(dim=0).mean(dim=1)
+        FEt_mean = FEt.mean()
 
         N = F.softplus(sigma) + sig_min
 
-        # return torch.dot(FEt_mean, epsilon) / N / n_pop
-        return FEt * epsilon / N
+        return FEt_mean * epsilon / N / n_pop
+        # return FEt * epsilon / N
 
     def grad_sigma(self, FEt, epsilon, sigma):
-        # FEt_mean = FEt.mean(dim=0).mean(dim=1)
+        FEt_mean = FEt.mean()
 
         N = F.softplus(sigma) + sig_min
 
         eq_1 = (torch.square(epsilon) - 1) / N
         eq_2 = torch.exp(sigma) / (1 + torch.exp(sigma))
 
-        # return torch.dot(FEt_mean, eq_1 * eq_2) / n_pop
-        return FEt * eq_1 * eq_2
+        return FEt_mean * eq_1 * eq_2 / n_pop
+        # return FEt * eq_1 * eq_2
 
     def init_sigmas(self):
         for param in self.parameters():

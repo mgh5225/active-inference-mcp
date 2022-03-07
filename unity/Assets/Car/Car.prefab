@@ -444,7 +444,7 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 20000
-  startPosition: {x: -3.5, y: -5.71}
+  mainAgent: 0
   maxStepsText: {fileID: 0}
   engineTypeText: {fileID: 0}
   actionText: {fileID: 0}
@@ -462,7 +462,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 5
+    VectorObservationSize: 3
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 1

@@ -20,7 +20,7 @@ class Environment:
             self.env_path = None
         else:
             self.env_path = os.path.join(
-                os.path.dirname(__file__), "../../unity/Build/environment.x86_64")
+                os.path.dirname(__file__), "../../unity/Build/environment_batch.x86_64")
 
         self.time_scale = time_scale
         self.env = None
@@ -52,19 +52,19 @@ class Environment:
 
     def get_position(self):
         decision_steps, _ = self.env.get_steps(self.behavior_name)
-        return decision_steps.obs[0][:, :2]
+        return decision_steps.obs[0][:, 0]
 
     def get_action(self):
         decision_steps, _ = self.env.get_steps(self.behavior_name)
-        return decision_steps.obs[0][:, 2]
+        return decision_steps.obs[0][:, 1]
 
     def get_distance(self):
         decision_steps, _ = self.env.get_steps(self.behavior_name)
-        return decision_steps.obs[0][:, 3:5]
+        return decision_steps.obs[0][:, 2]
 
-    def set_action(self, action: float):
+    def set_action(self, action: np.ndarray):
         action_tuple = ActionTuple()
-        action_tuple.add_continuous(np.array([[action]]))
+        action_tuple.add_continuous(action)
         self.env.set_actions(self.behavior_name, action_tuple)
         self.env.step()
 

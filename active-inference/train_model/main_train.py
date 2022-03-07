@@ -32,12 +32,12 @@ def sample_based_approximation_of_F():
 
     at = torch.tanh(torch.normal(at_mean, at_std))
 
-    env_at = at.cpu().numpy().reshape(1)[0]
+    env_at = at.view(n_pop, -1).cpu().numpy()
     env.set_action(env_at)
 
-    x_t = env.get_position()[0, 0]
-    a_t = env.get_action()[0]
-    distance = env.get_distance()[0, 0]
+    x_t = env.get_position()
+    a_t = env.get_action()
+    distance = env.get_distance()
 
     o_xt = si.o_xt(x_t)
     o_ht = si.o_ht(distance)
@@ -76,11 +76,11 @@ def optimisation_of_F_bound():
                               betas=(adam_beta_1, adam_beta_2),
                               eps=adam_epsilon)
 
-    for i in range(int(steps*n_pop)):
+    for i in range(steps):
         with torch.no_grad():
             FEt = sample_based_approximation_of_F()
             if i % 100 == 0:
-                print("[{}]Free Energy: {}".format(i+1, FEt.item()))
+                print("[{}]Free Energy: {}".format(i+1, FEt.mean().item()))
             if i % 1000 == 0:
                 a_model.save_model()
                 s_model.save_model()
@@ -114,7 +114,7 @@ if __name__ == "__main__":
 
     FEs = []
 
-    s_t = torch.zeros((1, d_s))
+    s_t = torch.zeros(int(n_pop), 1, d_s)
 
     a_model = gm.ANetModel(d_s, d_a)
     s_model = gm.SNetModel(d_s)
