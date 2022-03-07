@@ -64,10 +64,15 @@ public class CarAgent : Agent
 
     public void TargetReached()
     {
-        ResetCar();
+        EndEpisode();
     }
 
-    public void ResetCar()
+    public void CarRoofHit()
+    {
+        EndEpisode();
+    }
+
+    void ResetCar()
     {
         var zeroRotation = Quaternion.Euler(0f, 0f, 0f);
         transform.position = startPosition;

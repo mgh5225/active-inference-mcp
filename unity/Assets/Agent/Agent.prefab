@@ -501,7 +501,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6246606646861855188}
         m_TargetAssemblyTypeName: CarAgent, Assembly-CSharp
-        m_MethodName: ResetCar
+        m_MethodName: CarRoofHit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -590,7 +590,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6246606646861855188}
         m_TargetAssemblyTypeName: CarAgent, Assembly-CSharp
-        m_MethodName: ResetCar
+        m_MethodName: CarRoofHit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
