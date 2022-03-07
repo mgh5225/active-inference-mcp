@@ -11,12 +11,12 @@ def run_model():
 
     at = torch.tanh(torch.normal(at_mean, at_std))
 
-    env_at = at.cpu().numpy().reshape(1)[0]
+    env_at = at.view(n_pop, -1).cpu().numpy()
     env.set_action(env_at)
 
-    x_t = env.get_position()[0, 0]
-    a_t = env.get_action()[0]
-    distance = env.get_distance()[0, 0]
+    x_t = env.get_position()
+    a_t = env.get_action()
+    distance = env.get_distance()
 
     o_xt = si.o_xt(x_t)
     o_ht = si.o_ht(distance)
@@ -55,9 +55,7 @@ if __name__ == "__main__":
         torch.cuda.empty_cache()
         torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
-    FEs = []
-
-    s_t = torch.zeros((1, d_s))
+    s_t = torch.zeros(int(n_pop), 1, d_s)
 
     a_model = gm.ANetModel(d_s, d_a)
     s_model = gm.SNetModel(d_s)
@@ -70,9 +68,9 @@ if __name__ == "__main__":
         q_model.load_model()
         o_model.load_model()
 
-        distance = env.get_distance()[0, 0]
+        distance = env.get_distance()
         with torch.no_grad():
-            while abs(distance) > 0.05:
+            while not np.less_equal(np.abs(distance), 0.05).any():
                 run_model()
     except Exception as e:
         print(e)
