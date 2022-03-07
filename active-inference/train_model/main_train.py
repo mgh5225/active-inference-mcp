@@ -80,9 +80,9 @@ def optimisation_of_F_bound():
     for i in range(steps):
         with torch.no_grad():
             FEt = sample_based_approximation_of_F()
-            if i % 5 == 0:
+            if i % 100 == 0:
                 print("[{}]Free Energy: {}".format(i+1, FEt.item()))
-            if i % 1000 & i != 0 == 0:
+            if i % 1000 == 0:
                 a_model.save_model()
                 s_model.save_model()
                 q_model.save_model()
@@ -121,10 +121,16 @@ if __name__ == "__main__":
     q_model = gm.QNetModel(d_s, d_o)
     o_model = gm.ONetModel(d_s, d_o)
 
-    a_model.init_model()
-    s_model.init_model()
-    q_model.init_model()
-    o_model.init_model()
+    try:
+        a_model.load_model()
+        s_model.load_model()
+        q_model.load_model()
+        o_model.load_model()
+    except:
+        a_model.init_model()
+        s_model.init_model()
+        q_model.init_model()
+        o_model.init_model()
 
     optimisation_of_F_bound()
     env.close()

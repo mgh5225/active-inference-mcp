@@ -5,7 +5,7 @@ from torch.nn import functional as F
 
 from .hyper_parameters import *
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "../model/")
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "../models/")
 
 
 class NetModel(nn.Module):
@@ -22,6 +22,9 @@ class NetModel(nn.Module):
             MODEL_PATH, "{}-epsilons.pt".format(self.__class__.__name__))
 
     def save_model(self):
+        if not os.path.exists(MODEL_PATH):
+            os.mkdir(MODEL_PATH)
+
         torch.save(self.state_dict(), self.params_path)
         torch.save(self.sigmas, self.sigmas_path)
         torch.save(self.epsilons, self.epsilons_path)
