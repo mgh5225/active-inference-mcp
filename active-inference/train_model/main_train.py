@@ -76,7 +76,7 @@ def optimisation_of_F_bound():
                               betas=(adam_beta_1, adam_beta_2),
                               eps=adam_epsilon)
 
-    for i in range(steps):
+    for i in range(int(steps*n_pop)):
         with torch.no_grad():
             FEt = sample_based_approximation_of_F()
             if i % 100 == 0:
@@ -105,6 +105,7 @@ if __name__ == "__main__":
     env.init_env()
 
     env.set_engine_type(EngineType.Both)
+    env.set_max_steps(steps)
     env.reset()
 
     if torch.cuda.is_available():
@@ -131,5 +132,9 @@ if __name__ == "__main__":
         q_model.init_model()
         o_model.init_model()
 
-    optimisation_of_F_bound()
+    try:
+        optimisation_of_F_bound()
+    except Exception as e:
+        print(e)
+
     env.close()

@@ -64,14 +64,17 @@ if __name__ == "__main__":
     q_model = gm.QNetModel(d_s, d_o)
     o_model = gm.ONetModel(d_s, d_o)
 
-    a_model.load_model()
-    s_model.load_model()
-    q_model.load_model()
-    o_model.load_model()
+    try:
+        a_model.load_model()
+        s_model.load_model()
+        q_model.load_model()
+        o_model.load_model()
 
-    distance = env.get_distance()[0, 0]
-    with torch.no_grad():
-        while abs(distance) > 0.05:
-            run_model()
+        distance = env.get_distance()[0, 0]
+        with torch.no_grad():
+            while abs(distance) > 0.05:
+                run_model()
+    except Exception as e:
+        print(e)
 
     env.close()
