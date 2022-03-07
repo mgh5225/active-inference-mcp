@@ -7,33 +7,6 @@ from unity import EngineType, Environment
 from utils import sensory_inputs as si, generative_model as gm, functions as fn
 from utils.hyper_parameters import *
 
-env = Environment()
-env.init_env()
-
-env.set_engine_type(EngineType.Both)
-env.reset()
-
-if torch.cuda.is_available():
-    torch.cuda.empty_cache()
-    torch.set_default_tensor_type('torch.cuda.FloatTensor')
-
-
-FEs = []
-
-s_t = torch.zeros((1, d_s))
-x_t = env.get_position()[0]
-a_t = env.get_action()
-
-a_model = gm.ANetModel(d_s, d_a)
-s_model = gm.SNetModel(d_s)
-q_model = gm.QNetModel(d_s, d_o)
-o_model = gm.ONetModel(d_s, d_o)
-
-a_model.init_model()
-s_model.init_model()
-q_model.init_model()
-o_model.init_model()
-
 
 def get_parameters():
     params = nn.ParameterList()
@@ -107,7 +80,13 @@ def optimisation_of_F_bound():
     for i in range(steps):
         with torch.no_grad():
             FEt = sample_based_approximation_of_F()
-            print("[{}]Free Energy: {}".format(i+1, FEt.item()))
+            if i % 5 == 0:
+                print("[{}]Free Energy: {}".format(i+1, FEt.item()))
+            if i % 1000 & i != 0 == 0:
+                a_model.save_model()
+                s_model.save_model()
+                q_model.save_model()
+                o_model.save_model()
             FEs.append(FEt)
 
         optim_params.zero_grad()
@@ -123,5 +102,29 @@ def optimisation_of_F_bound():
 
 
 if __name__ == "__main__":
+    env = Environment()
+    env.init_env()
+
+    env.set_engine_type(EngineType.Both)
+    env.reset()
+
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.set_default_tensor_type('torch.cuda.FloatTensor')
+
+    FEs = []
+
+    s_t = torch.zeros((1, d_s))
+
+    a_model = gm.ANetModel(d_s, d_a)
+    s_model = gm.SNetModel(d_s)
+    q_model = gm.QNetModel(d_s, d_o)
+    o_model = gm.ONetModel(d_s, d_o)
+
+    a_model.init_model()
+    s_model.init_model()
+    q_model.init_model()
+    o_model.init_model()
+
     optimisation_of_F_bound()
     env.close()

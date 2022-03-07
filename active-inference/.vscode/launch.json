@@ -10,6 +10,13 @@
             "request": "launch",
             "module": "train_model.main_train",
             "justMyCode": true
+        },
+        {
+            "name": "Python: Run Model",
+            "type": "python",
+            "request": "launch",
+            "module": "run_model.main_run",
+            "justMyCode": true
         }
     ]
 }

@@ -1,15 +1,35 @@
+import os
 import torch
 from torch import nn
 from torch.nn import functional as F
 
 from .hyper_parameters import *
 
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "../model/")
+
 
 class NetModel(nn.Module):
+
     def __init__(self):
         super().__init__()
         self.sigmas = []
         self.epsilons = []
+        self.params_path = os.path.join(
+            MODEL_PATH, "{}-params.pt".format(self.__class__.__name__))
+        self.sigmas_path = os.path.join(
+            MODEL_PATH, "{}-sigmas.pt".format(self.__class__.__name__))
+        self.epsilons_path = os.path.join(
+            MODEL_PATH, "{}-epsilons.pt".format(self.__class__.__name__))
+
+    def save_model(self):
+        torch.save(self.state_dict(), self.params_path)
+        torch.save(self.sigmas, self.sigmas_path)
+        torch.save(self.epsilons, self.epsilons_path)
+
+    def load_model(self):
+        self.load_state_dict(torch.load(self.params_path))
+        self.sigmas = torch.load(self.sigmas_path)
+        self.epsilons = torch.load(self.epsilons_path)
 
     def grad_mu(self, FEt, epsilon, sigma):
         # FEt_mean = FEt.mean(dim=0).mean(dim=1)
