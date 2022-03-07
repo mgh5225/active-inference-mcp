@@ -1,7 +1,6 @@
 import torch
 import numpy as np
 from torch import optim, nn
-from torch.nn import functional as F
 
 from unity import EngineType, Environment
 from utils import sensory_inputs as si, generative_model as gm, functions as fn
@@ -31,7 +30,7 @@ def get_sigmas():
 def sample_based_approximation_of_F():
     at_mean, at_std = a_model(s_t)
 
-    at = F.tanh(torch.normal(at_mean, at_std))
+    at = torch.tanh(torch.normal(at_mean, at_std))
 
     env_at = at.cpu().numpy().reshape(1)[0]
     env.set_action(env_at)
