@@ -3,7 +3,7 @@ import numpy as np
 from torch import optim, nn
 
 from unity import EngineType, Environment
-from utils import sensory_inputs as si, generative_model as gm, functions as fn
+from utils import sensory_inputs as si, generative_model as gm
 from utils.hyper_parameters import *
 
 
@@ -50,13 +50,17 @@ def sample_based_approximation_of_F():
         (o_ht_mean, o_ht_std),\
         (o_at_mean, o_at_std) = o_model(hs_t)
 
-    l_o_xt = fn.GaussianNLL(o_xt, o_xt_mean, o_xt_std)
-    l_o_ht = fn.GaussianNLL(o_ht, o_ht_mean, o_ht_std)
-    l_o_at = fn.GaussianNLL(o_at, o_at_mean, o_at_std)
+    loss = nn.GaussianNLLLoss()
+    kl = nn.KLDivLoss()
+
+    l_o_xt = loss(o_xt_mean, o_xt, torch.square(o_xt_std))
+    l_o_ht = loss(o_ht_mean, o_ht, torch.square(o_ht_std))
+    l_o_at = loss(o_at_mean, o_at, torch.square(o_at_std))
 
     st_mean, st_std = s_model(s_t)
+    st = torch.normal(st_mean, st_std)
 
-    KL_st = fn.KLGaussianGaussian(hst_mean, hst_std, st_mean, st_std)
+    KL_st = kl(hs_t, st)
 
     FEt = KL_st + l_o_xt + l_o_ht + l_o_at
 
