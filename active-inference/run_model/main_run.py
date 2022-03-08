@@ -1,4 +1,5 @@
 import torch
+from torch import nn
 import numpy as np
 
 from unity import EngineType, Environment
