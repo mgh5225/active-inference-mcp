@@ -51,8 +51,8 @@ def sample_based_approximation_of_F():
         (o_at_mean, o_at_std) = o_model(hs_t)
 
     l_o_xt = fn.GaussianNLL(o_xt, o_xt_mean, o_xt_std)
-    l_o_ht = fn.GaussianNLL(o_xt, o_ht_mean, o_ht_std)
-    l_o_at = fn.GaussianNLL(o_xt, o_at_mean, o_at_std)
+    l_o_ht = fn.GaussianNLL(o_ht, o_ht_mean, o_ht_std)
+    l_o_at = fn.GaussianNLL(o_at, o_at_mean, o_at_std)
 
     st_mean, st_std = s_model(s_t)
 
