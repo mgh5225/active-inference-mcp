@@ -15,11 +15,11 @@ class NetModel(nn.Module):
         self.sigmas = []
         self.epsilons = []
         self.params_path = os.path.join(
-            MODEL_PATH, "{}-{}-params.pt".format(self.__class__.__name__, n_pop))
+            MODEL_PATH, "{}-params.pt".format(self.__class__.__name__))
         self.sigmas_path = os.path.join(
-            MODEL_PATH, "{}-{}-sigmas.pt".format(self.__class__.__name__, n_pop))
+            MODEL_PATH, "{}-sigmas.pt".format(self.__class__.__name__))
         self.epsilons_path = os.path.join(
-            MODEL_PATH, "{}-{}-epsilons.pt".format(self.__class__.__name__, n_pop))
+            MODEL_PATH, "{}-epsilons.pt".format(self.__class__.__name__))
 
     def save_model(self):
         if not os.path.exists(MODEL_PATH):

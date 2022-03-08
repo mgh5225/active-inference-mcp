@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3418291151829634444}
   - component: {fileID: 3418291151829634449}
   - component: {fileID: 3418291151829634448}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FrontWheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -564,7 +564,7 @@ GameObject:
   - component: {fileID: 3418291153489310882}
   - component: {fileID: 3418291153489310887}
   - component: {fileID: 3418291153489310886}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RearWheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

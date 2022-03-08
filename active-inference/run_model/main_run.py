@@ -55,7 +55,7 @@ if __name__ == "__main__":
         torch.cuda.empty_cache()
         torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
-    s_t = torch.zeros(int(n_pop), 1, d_s)
+    s_t = torch.zeros(n_pop, 1, d_s)
 
     a_model = gm.ANetModel(d_s, d_a)
     s_model = gm.SNetModel(d_s)

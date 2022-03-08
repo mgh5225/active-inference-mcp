@@ -106,6 +106,7 @@ if __name__ == "__main__":
 
     env.set_engine_type(EngineType.Both)
     env.set_max_steps(steps)
+    env.set_n_pop(n_pop)
     env.reset()
 
     if torch.cuda.is_available():
@@ -114,7 +115,7 @@ if __name__ == "__main__":
 
     FEs = []
 
-    s_t = torch.zeros(int(n_pop), 1, d_s)
+    s_t = torch.zeros(n_pop, 1, d_s)
 
     a_model = gm.ANetModel(d_s, d_a)
     s_model = gm.SNetModel(d_s)

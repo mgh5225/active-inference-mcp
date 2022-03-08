@@ -14,7 +14,7 @@ public class CarAgent : Agent
     [SerializeField] TMP_Text maxStepsText;
     [SerializeField] TMP_Text engineTypeText;
     [SerializeField] TMP_Text actionText;
-    [SerializeField] Transform target;
+    public Transform target;
     CarController carController;
     Vector2 startPosition;
     float throttle;
@@ -60,6 +60,11 @@ public class CarAgent : Agent
         base.OnEpisodeBegin();
 
         ResetCar();
+    }
+
+    public void SetTarget(Transform target)
+    {
+        this.target = target;
     }
 
     public void TargetReached()

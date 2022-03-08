@@ -50,6 +50,10 @@ class Environment:
         self.environment_parameters_channel.set_float_parameter(
             "maxSteps", max_steps)
 
+    def set_n_pop(self, n_pop: int):
+        self.environment_parameters_channel.set_float_parameter(
+            "n_pop", n_pop)
+
     def get_position(self):
         decision_steps, _ = self.env.get_steps(self.behavior_name)
         return decision_steps.obs[0][:, 0]
