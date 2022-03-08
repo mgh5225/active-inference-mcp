@@ -49,6 +49,7 @@ if __name__ == "__main__":
     env.init_env()
 
     env.set_engine_type(EngineType.Both)
+    env.set_n_pop(n_pop)
     env.reset()
 
     if torch.cuda.is_available():

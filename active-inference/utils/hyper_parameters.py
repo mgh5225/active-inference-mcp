@@ -8,9 +8,9 @@ adam_beta_2 = 0.999
 adam_epsilon = 10e-8
 
 n_F = int(1)
-n_pop = int(12)
+n_pop = int(50)
 
-steps = int(360000)
+steps = int(30000)
 
 sig_min = 1e-6
 sig_init = -3
