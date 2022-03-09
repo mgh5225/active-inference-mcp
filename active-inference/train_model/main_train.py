@@ -29,7 +29,8 @@ def get_sigmas():
 
 def sample_based_approximation_of_F():
     F = torch.zeros(n_pop, 1)
-    for i in range(n_run_steps):
+    s_t = torch.zeros(n_pop, 1, d_s)
+    for _ in range(n_run_steps):
         at_mean, at_std = a_model(s_t)
 
         at = torch.tanh(torch.normal(at_mean, at_std))
@@ -84,12 +85,14 @@ def optimisation_of_F_bound():
                               betas=(adam_beta_1, adam_beta_2),
                               eps=adam_epsilon)
 
+    print("{:<15} {:<30} {:<30}".format("step", "Mean FEt", "Min FEt"))
     for i in range(steps):
         with torch.no_grad():
             FEt = sample_based_approximation_of_F()
+            if i % 10 == 0:
+                print("{:<15} {:<30} {:<30}".format(
+                    i+1, FEt.mean().item(), FEt.min().item()))
             if i % 100 == 0:
-                print("[{}]Free Energy: {}".format(i+1, FEt.mean().item()))
-            if i % 1000 == 0:
                 a_model.save_model()
                 s_model.save_model()
                 q_model.save_model()
@@ -122,8 +125,6 @@ if __name__ == "__main__":
         torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
     FEs = []
-
-    s_t = torch.zeros(n_pop, 1, d_s)
 
     a_model = gm.ANetModel(d_s, d_a)
     s_model = gm.SNetModel(d_s)
