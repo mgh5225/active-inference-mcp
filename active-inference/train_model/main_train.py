@@ -55,14 +55,14 @@ def sample_based_approximation_of_F():
         loss = nn.GaussianNLLLoss(reduction="none")
         kl = nn.KLDivLoss(reduction="none")
 
-        l_o_xt = loss(o_xt_mean, o_xt, torch.square(o_xt_std)).view(n_pop, d_o)
-        l_o_ht = loss(o_ht_mean, o_ht, torch.square(o_ht_std)).view(n_pop, d_o)
-        l_o_at = loss(o_at_mean, o_at, torch.square(o_at_std)).view(n_pop, d_o)
+        l_o_xt = loss(o_xt_mean, o_xt, torch.square(o_xt_std)).view(n_pop, 1)
+        l_o_ht = loss(o_ht_mean, o_ht, torch.square(o_ht_std)).view(n_pop, 1)
+        l_o_at = loss(o_at_mean, o_at, torch.square(o_at_std)).view(n_pop, 1)
 
         st_mean, st_std = s_model(s_t)
         st = torch.normal(st_mean, st_std)
 
-        KL_st = kl(hs_t, st).mean(dim=-1).view(n_pop, d_o)
+        KL_st = kl(hs_t, st).mean(dim=-1).view(n_pop, 1)
 
         FEt = KL_st + l_o_xt + l_o_ht + l_o_at
 
