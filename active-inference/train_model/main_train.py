@@ -28,7 +28,7 @@ def get_sigmas():
 
 
 def sample_based_approximation_of_F():
-    F = torch.zeros(n_pop, d_o)
+    F = torch.zeros(n_pop, 1)
     for i in range(n_run_steps):
         at_mean, at_std = a_model(s_t)
 
