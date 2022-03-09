@@ -116,7 +116,7 @@ if __name__ == "__main__":
     env.init_env()
 
     env.set_engine_type(EngineType.Both)
-    env.set_max_steps(steps)
+    env.set_max_steps(n_run_steps)
     env.set_n_pop(n_pop)
     env.reset()
 
