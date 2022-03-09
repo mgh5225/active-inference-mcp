@@ -26,27 +26,7 @@ def run_model():
     hst_mean, hst_std = q_model(s_t, o_xt, o_ht, o_at)
     hs_t = torch.normal(hst_mean, hst_std)
 
-    (o_xt_mean, o_xt_std),\
-        (o_ht_mean, o_ht_std),\
-        (o_at_mean, o_at_std) = o_model(hs_t)
-
-    loss = nn.GaussianNLLLoss(reduction="mean")
-    kl = nn.KLDivLoss(reduction="mean")
-
-    l_o_xt = loss(o_xt_mean, o_xt, torch.square(o_xt_std))
-    l_o_ht = loss(o_ht_mean, o_ht, torch.square(o_ht_std))
-    l_o_at = loss(o_at_mean, o_at, torch.square(o_at_std))
-
-    st_mean, st_std = s_model(s_t)
-    st = torch.normal(st_mean, st_std)
-
-    KL_st = kl(hs_t, st)
-
-    FEt = KL_st + l_o_xt + l_o_ht + l_o_at
-
     s_t.copy_(hs_t)
-
-    return FEt
 
 
 if __name__ == "__main__":

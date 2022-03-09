@@ -8,7 +8,8 @@ adam_beta_2 = 0.999
 adam_epsilon = 10e-8
 
 n_F = int(1)
-n_pop = int(50)
+n_pop = int(100)
+n_run_steps = int(30)
 
 steps = int(30000)
 
