@@ -17,3 +17,7 @@ The Mountain Car Problem is a classic reinforcement learning task in which an un
 To install and set up the project, follow the instructions in the [Unity ML-Agents Installation Guide](https://github.com/Unity-Technologies/ml-agents/blob/develop/docs/Installation.md). This will help you set up the required dependencies and environment for running the project.
 
 ## Features
+
+- Implementation of the Mountain Car Problem using Active Inference
+- Visualization of the agent's learning progress
+- Customizable environment and agent parameters for experimentation
